@@ -36,10 +36,10 @@ We tested with a version of docker at least ... and singularity ...
 | V100              |               |
 
 **CPUs**
-|       Intel      | AMD        |
-|:----------------:|:----------:|
-| Xeon Gold 6230   | EPYC ...   |
-| ...              | GENOA ...  |
+|       Intel      | AMD         |
+|:----------------:|:-----------:|
+| Xeon Gold 6230   | EPYC ...    |
+| ...              | GENOA ...   |
 
 ## Details
 Versions of the backend used inside the container:
