@@ -1,0 +1,6 @@
+.vscode
+*[Bb]uild*
+venv*
+*.tgz
+*.tar.gz
+*.tar
