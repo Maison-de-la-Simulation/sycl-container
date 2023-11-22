@@ -38,7 +38,7 @@ We tested with a version of docker at least ... and singularity ...
 **CPUs**
 |       Intel      | AMD         |
 |:----------------:|:-----------:|
-| Xeon Gold 6230   | EPYC ...    |
+| Xeon Gold 6230   | EPYC  ...   |
 | ...              | GENOA ...   |
 
 ## Details
