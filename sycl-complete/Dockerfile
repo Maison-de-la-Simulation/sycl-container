@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
 && rm -rf /var/lib/apt/lists/*
 
+############################
 #Install cmake 3.27
 RUN cd /opt \
 && wget https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake-3.27.7-linux-x86_64.sh
@@ -48,6 +49,7 @@ RUN mkdir -p /opt/sycl/source \
 && git checkout 589824d \
 && mv /llvm /opt/sycl/source
 
+############################
 #Install OpenCL CPU runtime to get backend available in DPCPP
 RUN cd /opt \
 && wget https://github.com/intel/llvm/releases/download/2023-WW27/oclcpuexp-2023.16.6.0.28_rel.tar.gz
