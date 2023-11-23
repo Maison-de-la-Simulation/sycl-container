@@ -35,7 +35,7 @@ docker run --it ghcr.io/maison-de-la-simulation/sycl-complete
 ## Use the SYCL compilers & runtime
 Compilers are installed in `/opt/sycl`. The environment is setup in the `$PATH` so just type in `sycl-ls` (DPC++) or `acpp-info` (AdaptiveCpp) to list the SYCL devices. The associated runtimes are installed so once your code is compiled you should be able to run it within the container.
 
-Following are examples to compile a SYCL code with the two different SYCL compilers. We assume the code is mounted inside /mnt/program.
+Following are examples to compile a SYCL code with the two different SYCL compilers. We assume the code is mounted inside `/mnt/program`.
 
 ### AdaptiveCpp
 - Documentation for [using acpp](https://github.com/AdaptiveCpp/AdaptiveCpp/blob/develop/doc/using-hipsycl.md).
@@ -56,18 +56,18 @@ make -j 64
 ### DPC++
 - Intel DPC++ [Users manual](https://intel.github.io/llvm-docs/UsersManual.html)
 
-With this compiler, use the `-fsycl` and `-fsycl-targets` compilation flags to use ahead of time compilation. We use the cmake `COMPIL_FLAGS` variable to pass these parameters to the `clang++` compiler.
+With this compiler, use the `-fsycl` and `-fsycl-targets` compilation flags to use ahead of time compilation. We use the cmake `M_FLAGS` variable to pass these parameters to the `clang++` compiler.
 
 ```sh
 #for NVIDIA A100
 cmake \
 -DCMAKE_CXX_COMPILER=clang++ \
--DCOMPIL_FLAGS="-fsycl -fsycl-targets=nvidia_gpu_sm_80" \
+-DM_FLAGS="-fsycl -fsycl-targets=nvidia_gpu_sm_80" \
 ..
 
 
 #for Intel CPU with avx512 capabilities
-clang++ -fsycl -fsycl-targets=spir64_x86_64 -Xsycl-target-backend "-march=avx512"
+clang++ -fsycl -fsycl-targets=spir64_x86_64 -Xsycl-target-backend "-march=avx512" myprog.cpp myprog.o
 ```
 
 <!-- ## Tested hardware
@@ -103,5 +103,5 @@ Tools:
 ## Known issues
 - `clang++-16` (llvm) and `clang++` (Intel llvm, the SYCL compiler) are not the same
 
-- On some singularity configuration: `clang++` cannot write temporary file, you need to set the `TMPDIR` pointing to a directory inside the writable container
-- On some singularity configuration: mount `/sys /dev /proc` inside the container (`SINGUALRITY_BIND="/sys,/dev,/proc"`)
+- On some singularity configuration: `clang++` cannot write temporary file during the compilation phase. You need to set the `TMPDIR` pointing to a directory inside the writable container
+- On some singularity configuration you need to mount `/sys /dev /proc` inside the container (`SINGUALRITY_BIND="/sys,/dev,/proc"`) to be able to see the GPUs devices
