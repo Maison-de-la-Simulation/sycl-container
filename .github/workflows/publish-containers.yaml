@@ -1,7 +1,7 @@
 name: Publish docker images for SYCL
 
 on:
-  push: { branches: [ 'main' ] }
+  push: { branches: [ 'main', 'llvm-17' ] }
 
 jobs:
   build-push-container:
@@ -21,6 +21,6 @@ jobs:
           echo ${{ secrets.GH_ACCESS_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           cd ${{matrix.implem}}-${{matrix.backend}}
           docker build \
-            --tag ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}} \
+            --tag ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}}:llvm-17 \
             --squash .
-          docker push ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}}
+          docker push ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}}:llvm-17
