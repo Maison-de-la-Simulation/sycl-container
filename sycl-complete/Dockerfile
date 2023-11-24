@@ -1,6 +1,7 @@
 FROM nvidia/cuda:11.8.0-devel-ubuntu20.04
 
 LABEL org.opencontainers.image.source=https://github.com/maison-de-la-simulation/sycl-container
+LABEL org.opencontainers.image.description="SYCL compilers and runtime environment"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
