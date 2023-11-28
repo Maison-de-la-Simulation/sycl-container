@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python-is-python3 \
     zstd \
-    vim \
+    vim nano \
     unzip \
     libnuma-dev \
     wget \
@@ -39,7 +39,7 @@ RUN cd /usr/local \
 #       Install ROCm       #
 ############################
 RUN wget --progress=bar:force -O - https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - \
-&& echo "deb [arch=amd64] https://repo.radeon.com/rocm/apt/5.3.0 focal main" | tee /etc/apt/sources.list.d/rocm.list \
+&& echo "deb [arch=amd64] https://repo.radeon.com/rocm/apt/5.3 focal main" | tee /etc/apt/sources.list.d/rocm.list \
 && printf 'Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600' | tee /etc/apt/preferences.d/rocm-pin-600 \
 && apt update -y \
 && apt install -y rocm-dev
