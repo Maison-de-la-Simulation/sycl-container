@@ -36,7 +36,7 @@ RUN cd /usr/local \
 && rm /opt/cmake-3.27.7-linux-x86_64.sh
 
 ############################
-#       Install ROCm       #
+#       Install ROCm 5.3   #
 ############################
 RUN wget --progress=bar:force -O - https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - \
 && echo "deb [arch=amd64] https://repo.radeon.com/rocm/apt/5.3 focal main" | tee /etc/apt/sources.list.d/rocm.list \
@@ -47,7 +47,7 @@ RUN wget --progress=bar:force -O - https://repo.radeon.com/rocm/rocm.gpg.key | a
 RUN mkdir -p /opt/sycl/source \
 && git clone https://github.com/intel/llvm.git \
 && cd llvm \
-&& git checkout 589824d \
+&& git checkout 2023-WW27 \
 && mv /llvm /opt/sycl/source
 
 ############################
@@ -111,9 +111,9 @@ RUN wget --progress=bar:force https://apt.llvm.org/llvm.sh \
 
 ############################
 #       Install acpp       #
-############################
+############################ 
 RUN cd /opt/sycl \
-&& git clone --recurse-submodules https://github.com/AdaptiveCpp/AdaptiveCpp.git -b v23.10.0 \
+&& git clone --recurse-submodules https://github.com/AdaptiveCpp/AdaptiveCpp.git -b v24.02.0 \
 && cd AdaptiveCpp \
 && mkdir build && cd build \
 && cmake -G Ninja \
