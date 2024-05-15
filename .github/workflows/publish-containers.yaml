@@ -21,6 +21,6 @@ jobs:
           echo ${{ secrets.GH_ACCESS_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           cd ${{matrix.implem}}-${{matrix.backend}}
           docker build \
-            --tag ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}}:llvm-16 \
+            --tag ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}}:ci_build \
             --squash .
-          docker push ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}}:llvm-16
+          docker push ghcr.io/maison-de-la-simulation/${{matrix.implem}}-${{matrix.backend}}:ci_build
