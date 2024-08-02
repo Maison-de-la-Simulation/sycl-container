@@ -130,5 +130,6 @@ RUN cd /opt/sycl \
 && cd /opt \
 && rm -rf /opt/sycl/AdaptiveCpp
 
+#Env variables
 ENV PATH=/opt/sycl/acpp/bin:/opt/sycl/dpcpp/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/sycl/dpcpp/lib:/opt/sycl/acpp/lib:$LD_LIBRARY_PATH
