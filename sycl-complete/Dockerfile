@@ -105,8 +105,8 @@ RUN mkdir /opt/dpcpp \
 ############################
 RUN wget --progress=bar:force https://apt.llvm.org/llvm.sh \
 && chmod +x llvm.sh \
-&& ./llvm.sh 16 \
-&& apt install -y libclang-16-dev clang-tools-16 libomp-16-dev \
+&& ./llvm.sh 17 \
+&& apt install -y libclang-17-dev clang-tools-17 libomp-17-dev \
 && rm llvm.sh
 
 ############################
@@ -117,9 +117,9 @@ RUN cd /opt/sycl \
 && cd AdaptiveCpp \
 && mkdir build && cd build \
 && cmake -G Ninja \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++-16 \
-    -DCLANG_EXECUTABLE_PATH=/usr/bin/clang++-16 \
-    -DLLVM_DIR=/usr/lib/llvm-16/lib/cmake/llvm \
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++-17 \
+    -DCLANG_EXECUTABLE_PATH=/usr/bin/clang++-17 \
+    -DLLVM_DIR=/usr/lib/llvm-17/lib/cmake/llvm \
     -DWITH_CUDA_BACKEND=ON -DWITH_ROCM_BACKEND=ON \
     -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
     -DROCM_PATH=/opt/rocm \
