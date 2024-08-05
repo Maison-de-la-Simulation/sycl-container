@@ -1,8 +1,8 @@
 # SYCL Container
 
 This container contains an environment to run and compile [SYCL 2020](https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html) codes on NVIDIA and AMD GPUs and any CPU with two SYCL compilers:
-- AdaptiveCpp [v23.10.0](https://github.com/AdaptiveCpp/AdaptiveCpp/tree/v23.10.0)
-- oneAPI DPC++ (Intel LLVM commit [589824d](https://github.com/intel/llvm/tree/589824d74532c85dee50e006cdc6685269eadfef))
+- AdaptiveCpp [v24.02.0](https://github.com/AdaptiveCpp/AdaptiveCpp/tree/v24.02.0)
+- oneAPI DPC++ (Intel LLVM release [2023-WW27](https://github.com/intel/llvm/releases/tag/2023-WW27))
 
 ## How to run container
 
@@ -89,19 +89,17 @@ We tested with a version of docker at least ... and singularity ...
 Versions of the backend used inside the container:
 - **NVIDIA GPUs:** CUDA 11.8 via [NVIDIA base container](https://hub.docker.com/layers/nvidia/cuda/11.8.0-devel-ubuntu20.04/images/sha256-6e12af425102e25d3e644ed353072eca3aa8c5f11dd79fa8e986664f9e62b37a?context=explore)
 - **AMD GPUs:** [ROCm](https://docs.amd.com/en/docs-5.5.0/deploy/linux/index.html) 5.5.1
-- **OpenMP CPUs** (used for AdaptiveCpp CPUs compilation and runtime): [LLVM](https://apt.llvm.org/) 16.0.0
+- **OpenMP CPUs** (used for AdaptiveCpp CPUs compilation and runtime): [LLVM](https://apt.llvm.org/) 17.0.0
 - **OpenCL Devices** (used for DPC++ CPUs runtime): OpenCL via [oneAPI DPC++ Get Started Guide](https://intel.github.io/llvm-docs/GetStartedGuide.html#install-low-level-runtime)
-
-We use this specific commit ([589824d](https://github.com/intel/llvm/tree/589824d74532c85dee50e006cdc6685269eadfef)) of Intel/LLVM because there is a [known issue](https://github.com/intel/llvm/issues/4381) for multi NVIDIA-GPU backend resulting in a segfault when calling `sycl-ls` due to the `get_platform` function. Because we needed the `local_accessor`, a SYCL 2020 features, we had to find a commit before the sefgault was introduced and after the implementation of the `local_accessor`.
 
 Tools:
 - CMake 3.27
 - vim 8.1
 - git 2.25.1
-- wget, unzip, ptyhon...
+- wget, unzip, python, nano...
 
 ## Known issues
-- `clang++-16` (llvm) and `clang++` (Intel llvm, the SYCL compiler) are not the same
+- `clang++-17` (llvm) and `clang++` (Intel llvm, the SYCL compiler) are not the same
 
 - On some singularity configuration: `clang++` cannot write temporary file during the compilation phase. You need to set the `TMPDIR` pointing to a directory inside the writable container
 - On some singularity configuration you need to mount `/sys /dev /proc` inside the container (`SINGUALRITY_BIND="/sys,/dev,/proc"`) to be able to see the GPUs devices
