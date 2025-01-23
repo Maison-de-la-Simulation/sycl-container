@@ -1,7 +1,7 @@
-FROM nvidia/cuda:11.8.0-devel-ubuntu20.04
+FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
 
 LABEL org.opencontainers.image.source=https://github.com/maison-de-la-simulation/sycl-container
-LABEL org.opencontainers.image.description="SYCL compilers and runtime environment"
+LABEL org.opencontainers.image.description="SYCL compilers and runtime for DPCPP and ACPP"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -27,30 +27,31 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
 && rm -rf /var/lib/apt/lists/*
 
-############################
-#Install cmake 3.27
+########################################################
+# Install cmake 3.27
 RUN cd /opt \
 && wget https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake-3.27.7-linux-x86_64.sh
 RUN cd /usr/local \
 && sh /opt/cmake-3.27.7-linux-x86_64.sh --skip-license \
 && rm /opt/cmake-3.27.7-linux-x86_64.sh
 
-############################
-#       Install ROCm 5.3   #
-############################
+########################################################
+# Install ROCm 5.3
 RUN wget --progress=bar:force -O - https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - \
 && echo "deb [arch=amd64] https://repo.radeon.com/rocm/apt/5.3 focal main" | tee /etc/apt/sources.list.d/rocm.list \
 && printf 'Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600' | tee /etc/apt/preferences.d/rocm-pin-600 \
 && apt update -y \
 && apt install -y rocm-dev
 
+########################################################
+# Clone and checkout intel llvm (DPCPP)
 RUN mkdir -p /opt/sycl/source \
 && git clone https://github.com/intel/llvm.git \
 && cd llvm \
 && git checkout 2023-WW27 \
 && mv /llvm /opt/sycl/source
 
-############################
+########################################################
 #Install OpenCL CPU runtime to get backend available in DPCPP
 RUN cd /opt \
 && wget https://github.com/intel/llvm/releases/download/2023-WW27/oclcpuexp-2023.16.6.0.28_rel.tar.gz
@@ -80,9 +81,8 @@ RUN ln -s /opt/intel/oneapi-tbb-2021.10.0/lib/intel64/gcc4.8/libtbb.so /opt/inte
 RUN echo /opt/intel/oclcpuexp_2023.16.6.0.28_rel/x64 >> /etc/ld.so.conf.d/libintelopenclexp.conf \
 && ldconfig -f /etc/ld.so.conf.d/libintelopenclexp.conf
 
-############################
-#        Build DPC++       #
-############################
+########################################################
+# Build DPC++
 ENV CUDA_LIB_PATH=/usr/local/cuda/lib64/stubs
 RUN mkdir -p /opt/sycl/source/llvm/build \
     && python3 /opt/sycl/source/llvm/buildbot/configure.py \
@@ -100,18 +100,16 @@ RUN mkdir /opt/dpcpp \
 && mv /opt/sycl/* /opt/dpcpp \
 && mv /opt/dpcpp /opt/sycl
 
-############################
-#       Install LLVM       #
-############################
+########################################################
+# Install LLVM
 RUN wget --progress=bar:force https://apt.llvm.org/llvm.sh \
 && chmod +x llvm.sh \
 && ./llvm.sh 17 \
 && apt install -y libclang-17-dev clang-tools-17 libomp-17-dev \
 && rm llvm.sh
 
-############################
-#       Install acpp       #
-############################ 
+########################################################
+# Install acpp 
 RUN cd /opt/sycl \
 && git clone --recurse-submodules https://github.com/AdaptiveCpp/AdaptiveCpp.git -b v24.02.0 \
 && cd AdaptiveCpp \
@@ -130,6 +128,7 @@ RUN cd /opt/sycl \
 && cd /opt \
 && rm -rf /opt/sycl/AdaptiveCpp
 
+########################################################
 #Env variables
 ENV PATH=/opt/sycl/acpp/bin:/opt/sycl/dpcpp/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/sycl/dpcpp/lib:/opt/sycl/acpp/lib:$LD_LIBRARY_PATH
