@@ -1,0 +1,12 @@
+- Add L0 support (Intel GPUs)
+  - ACPP (ACPP LLVM version must be <= to LLVM rocm)
+  - DPCPP
+- Update ROCm version (MI300)
+  - 6.2.1.
+  - `module load amd-mixed/6.2.1` sur adastra
+  - [Quick start install guide](https://rocm.docs.amd.com/projects/install-on-linux/en/docs-6.2.1/install/quick-start.html)
+  - amdclang version is 18.0.0
+- Update CUDA
+  - 12.1
+- Update OpenCL backend for acpp instead of OpenMP
+- Update LLVM to 18? would be nice
