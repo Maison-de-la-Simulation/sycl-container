@@ -35,8 +35,15 @@ RUN cd /usr/local \
 && sh /opt/cmake-3.27.7-linux-x86_64.sh --skip-license \
 && rm /opt/cmake-3.27.7-linux-x86_64.sh
 
+
 ########################################################
-# Install ROCm 6.2.1
+# Install ROCm 6.2.1 and depndencies
+RUN apt update -y && apt install -y software-properties-common \
+&& add-apt-repository universe \
+&& add-apt-repository multiverse \
+&& apt update -y \
+&& apt install -y rsync dialog
+
 RUN wget https://repo.radeon.com/amdgpu-install/6.2.1/ubuntu/jammy/amdgpu-install_6.2.60201-1_all.deb \
 && apt install ./amdgpu-install_6.2.60201-1_all.deb \
 && apt update -y \
@@ -44,60 +51,60 @@ RUN wget https://repo.radeon.com/amdgpu-install/6.2.1/ubuntu/jammy/amdgpu-instal
 
 ########################################################
 # Clone and checkout intel llvm (DPCPP)
-# RUN mkdir -p /opt/sycl/source \
-# && git clone https://github.com/intel/llvm.git \
-# && cd llvm \
-# && git checkout 2023-WW27 \
-# && mv /llvm /opt/sycl/source
+RUN mkdir -p /opt/sycl/source \
+&& git clone https://github.com/intel/llvm.git \
+&& cd llvm \
+&& git checkout 2024-WW43 \
+&& mv /llvm /opt/sycl/source
 
-# ########################################################
-# #Install OpenCL CPU runtime to get backend available in DPCPP
-# RUN cd /opt \
-# && wget https://github.com/intel/llvm/releases/download/2023-WW27/oclcpuexp-2023.16.6.0.28_rel.tar.gz
+########################################################
+#Install OpenCL CPU runtime to get backend available in DPCPP
+RUN cd /opt \
+&& wget https://github.com/intel/llvm/releases/download/2024-WW43/oclcpuexp-2024.18.10.0.08_rel.tar.gz
 
-# RUN cd /opt \
-# && wget https://github.com/oneapi-src/oneTBB/releases/download/v2021.10.0/oneapi-tbb-2021.10.0-lin.tgz
+RUN cd /opt \
+&& wget https://github.com/oneapi-src/oneTBB/releases/download/v2022.0.0/oneapi-tbb-2022.0.0-lin.tgz
 
-# RUN mkdir -p /opt/intel/oclcpuexp_2023.16.6.0.28_rel \
-# && cd /opt/intel/oclcpuexp_2023.16.6.0.28_rel \
-# && mv /opt/oclcpuexp-2023.16.6.0.28_rel.tar.gz /opt/intel/oclcpuexp_2023.16.6.0.28_rel \
-# && tar -zxvf oclcpuexp-2023.16.6.0.28_rel.tar.gz
+RUN mkdir -p /opt/intel/oclcpuexp-2024.18.10.0.08_rel \
+&& cd /opt/intel/oclcpuexp-2024.18.10.0.08_rel \
+&& mv /opt/oclcpuexp-2024.18.10.0.08_rel.tar.gz /opt/intel/oclcpuexp-2024.18.10.0.08_rel \
+&& tar -zxvf oclcpuexp-2024.18.10.0.08_rel.tar.gz
 
-# RUN echo /opt/intel/oclcpuexp_2023.16.6.0.28_rel/x64/libintelocl.so > /etc/OpenCL/vendors/intel_expcpu.icd
+RUN echo /opt/intel/oclcpuexp-2024.18.10.0.08_rel/x64/libintelocl.so > /etc/OpenCL/vendors/intel_expcpu.icd
 
-# RUN mkdir -p /opt/intel \
-# && cd /opt/intel && mv /opt/oneapi-tbb-2021.10.0-lin.tgz /opt/intel \
-# && tar -zxvf oneapi-tbb*lin.tgz
+RUN mkdir -p /opt/intel \
+&& cd /opt/intel && mv /opt/oneapi-tbb-2022.0.0-lin.tgz /opt/intel \
+&& tar -zxvf oneapi-tbb*lin.tgz
 
-# RUN rm /opt/intel/oclcpuexp_2023.16.6.0.28_rel/oclcpuexp-2023.16.6.0.28_rel.tar.gz \
-# && rm /opt/intel/oneapi-tbb-2021.10.0-lin.tgz
+RUN rm /opt/intel/oclcpuexp-2024.18.10.0.08_rel/oclcpuexp-2024.18.10.0.08_rel.tar.gz \
+&& rm /opt/intel/oneapi-tbb-2022.0.0-lin.tgz
 
-# RUN ln -s /opt/intel/oneapi-tbb-2021.10.0/lib/intel64/gcc4.8/libtbb.so /opt/intel/oclcpuexp_2023.16.6.0.28_rel/x64 \
-# && ln -s /opt/intel/oneapi-tbb-2021.10.0/lib/intel64/gcc4.8/libtbbmalloc.so /opt/intel/oclcpuexp_2023.16.6.0.28_rel/x64 \
-# && ln -s /opt/intel/oneapi-tbb-2021.10.0/lib/intel64/gcc4.8/libtbb.so.12 /opt/intel/oclcpuexp_2023.16.6.0.28_rel/x64 \
-# && ln -s /opt/intel/oneapi-tbb-2021.10.0/lib/intel64/gcc4.8/libtbbmalloc.so.2 /opt/intel/oclcpuexp_2023.16.6.0.28_rel/x64 
+RUN ln -s /opt/intel/oneapi-tbb-2022.0.0/lib/intel64/gcc4.8/libtbb.so /opt/intel/oclcpuexp-2024.18.10.0.08_rel/x64 \
+&& ln -s /opt/intel/oneapi-tbb-2022.0.0/lib/intel64/gcc4.8/libtbbmalloc.so /opt/intel/oclcpuexp-2024.18.10.0.08_rel/x64 \
+&& ln -s /opt/intel/oneapi-tbb-2022.0.0/lib/intel64/gcc4.8/libtbb.so.12 /opt/intel/oclcpuexp-2024.18.10.0.08_rel/x64 \
+&& ln -s /opt/intel/oneapi-tbb-2022.0.0/lib/intel64/gcc4.8/libtbbmalloc.so.2 /opt/intel/oclcpuexp-2024.18.10.0.08_rel/x64 
 
-# RUN echo /opt/intel/oclcpuexp_2023.16.6.0.28_rel/x64 >> /etc/ld.so.conf.d/libintelopenclexp.conf \
-# && ldconfig -f /etc/ld.so.conf.d/libintelopenclexp.conf
+RUN echo /opt/intel/oclcpuexp-2024.18.10.0.08_rel/x64 >> /etc/ld.so.conf.d/libintelopenclexp.conf \
+&& ldconfig -f /etc/ld.so.conf.d/libintelopenclexp.conf
 
-# ########################################################
-# # Build DPC++
-# ENV CUDA_LIB_PATH=/usr/local/cuda/lib64/stubs
-# RUN mkdir -p /opt/sycl/source/llvm/build \
-#     && python3 /opt/sycl/source/llvm/buildbot/configure.py \
-#       --cuda \
-#       --hip \
-#       --cmake-gen "Ninja" \
-#       --cmake-opt="-DCMAKE_INSTALL_PREFIX=/opt/sycl" \
-#       --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda" \
-#       -t release \
-#       -o /opt/sycl/source/llvm/build \
-#     && python3 /opt/sycl/source/llvm/buildbot/compile.py -o /opt/sycl/source/llvm/build -j `nproc` \
-#     && rm -rf /opt/sycl/source/llvm/
+########################################################
+# Build DPC++
+ENV CUDA_LIB_PATH=/usr/local/cuda/lib64/stubs
+RUN mkdir -p /opt/sycl/source/llvm/build \
+    && python3 /opt/sycl/source/llvm/buildbot/configure.py \
+      --cuda \
+      --hip \
+      --cmake-gen "Ninja" \
+      --cmake-opt="-DCMAKE_INSTALL_PREFIX=/opt/sycl" \
+      --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda" \
+      -t release \
+      -o /opt/sycl/source/llvm/build \
+    && python3 /opt/sycl/source/llvm/buildbot/compile.py -o /opt/sycl/source/llvm/build -j 8 \
+    && rm -rf /opt/sycl/source/llvm/
 
-# RUN mkdir /opt/dpcpp \
-# && mv /opt/sycl/* /opt/dpcpp \
-# && mv /opt/dpcpp /opt/sycl
+RUN mkdir /opt/dpcpp \
+&& mv /opt/sycl/* /opt/dpcpp \
+&& mv /opt/dpcpp /opt/sycl
 
 # ########################################################
 # # Install LLVM
