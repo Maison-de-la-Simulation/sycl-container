@@ -5,6 +5,11 @@ LABEL org.opencontainers.image.description="SYCL compilers and runtime for DPCPP
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+
+COPY release.gpg /release.gpg
+
+RUN gpg --dearmor --yes -o /etc/apt/keyrings/release.gpg < /release.gpg
+
 RUN apt-get update && apt-get install -y \
     ccache \
     build-essential \
@@ -89,22 +94,22 @@ RUN echo /opt/intel/oclcpuexp-2024.18.10.0.08_rel/x64 >> /etc/ld.so.conf.d/libin
 
 ########################################################
 # Build DPC++
-ENV CUDA_LIB_PATH=/usr/local/cuda/lib64/stubs
-RUN mkdir -p /opt/sycl/source/llvm/build \
-    && python3 /opt/sycl/source/llvm/buildbot/configure.py \
-      --cuda \
-      --hip \
-      --cmake-gen "Ninja" \
-      --cmake-opt="-DCMAKE_INSTALL_PREFIX=/opt/sycl" \
-      --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda" \
-      -t release \
-      -o /opt/sycl/source/llvm/build \
-    && python3 /opt/sycl/source/llvm/buildbot/compile.py -o /opt/sycl/source/llvm/build -j 8 \
-    && rm -rf /opt/sycl/source/llvm/
+# ENV CUDA_LIB_PATH=/usr/local/cuda/lib64/stubs
+# RUN mkdir -p /opt/sycl/source/llvm/build \
+#     && python3 /opt/sycl/source/llvm/buildbot/configure.py \
+#       --cuda \
+#       --hip \
+#       --cmake-gen "Ninja" \
+#       --cmake-opt="-DCMAKE_INSTALL_PREFIX=/opt/sycl" \
+#       --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda" \
+#       -t release \
+#       -o /opt/sycl/source/llvm/build \
+#     && python3 /opt/sycl/source/llvm/buildbot/compile.py -o /opt/sycl/source/llvm/build -j 8 \
+#     && rm -rf /opt/sycl/source/llvm/
 
-RUN mkdir /opt/dpcpp \
-&& mv /opt/sycl/* /opt/dpcpp \
-&& mv /opt/dpcpp /opt/sycl
+# RUN mkdir /opt/dpcpp \
+# && mv /opt/sycl/* /opt/dpcpp \
+# && mv /opt/dpcpp /opt/sycl
 
 # ########################################################
 # # Install LLVM
