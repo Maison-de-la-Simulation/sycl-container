@@ -131,7 +131,7 @@ RUN wget --progress=bar:force https://apt.llvm.org/llvm.sh \
 # ########################################################
 # Install acpp 
 RUN cd /opt/sycl \
-&& git clone --recurse-submodules https://github.com/AdaptiveCpp/AdaptiveCpp.git -b v24.02.0 \
+&& git clone --recurse-submodules https://github.com/AdaptiveCpp/AdaptiveCpp.git -b v24.10.0 \
 && cd AdaptiveCpp \
 && mkdir build && cd build \
 && cmake -G Ninja \
@@ -142,6 +142,7 @@ RUN cd /opt/sycl \
     -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
     -DROCM_PATH=/opt/rocm \
     -DCMAKE_INSTALL_PREFIX=/opt/sycl/acpp \
+    -DWITH_LEVEL_ZERO_BACKEND=ON \
     -DWITH_OPENCL_BACKEND=OFF \
     .. \
 && ninja install \
