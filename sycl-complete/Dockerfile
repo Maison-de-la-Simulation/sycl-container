@@ -5,8 +5,8 @@ LABEL org.opencontainers.image.description="SYCL compilers and runtime for DPCPP
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# COPY release.gpg /release.gpg
-# RUN gpg --dearmor --yes -o /etc/apt/keyrings/release.gpg < /release.gpg
+COPY release.gpg /release.gpg
+RUN gpg --dearmor --yes -o /etc/apt/keyrings/release.gpg < /release.gpg
 
 # Install nsys profiler
 RUN apt update
@@ -50,15 +50,18 @@ RUN cd /usr/local \
 ########################################################
 # Install ROCm 6.2.1 and depndencies
 RUN apt update -y && apt install -y software-properties-common \
-&& add-apt-repository universe \
-&& add-apt-repository multiverse \
-&& apt update -y \
-&& apt install -y rsync dialog
+    && add-apt-repository universe \
+    && add-apt-repository multiverse \
+    && apt update -y \
+    && apt install -y rsync dialog wget
 
 RUN wget https://repo.radeon.com/amdgpu-install/6.2.1/ubuntu/jammy/amdgpu-install_6.2.60201-1_all.deb \
-&& apt install ./amdgpu-install_6.2.60201-1_all.deb \
-&& apt update -y \
-&& apt install -y amdgpu-dkms rocm
+    && apt install ./amdgpu-install_6.2.60201-1_all.deb \
+    && apt update -y \
+    && amdgpu-install --usecase=rocm --no-dkms --no-32 \
+    && apt install -y rocm-runtime rocm-core hsa-rocr-dev hip-runtime-amd \
+    && apt clean && rm -rf /var/lib/apt/lists/*
+
 
 ########################################################
 # Clone and checkout intel llvm (DPCPP)
