@@ -58,8 +58,10 @@ RUN apt update -y && apt install -y software-properties-common \
 RUN wget https://repo.radeon.com/amdgpu-install/6.2.1/ubuntu/jammy/amdgpu-install_6.2.60201-1_all.deb \
     && apt install ./amdgpu-install_6.2.60201-1_all.deb \
     && apt update -y \
-    && apt install -y rocm-runtime rocm-core hsa-rocr-dev hip-runtime-amd \
+    && amdgpu-install --usecase=rocm --no-dkms --no-32 \
     && apt clean && rm -rf /var/lib/apt/lists/*
+
+RUN apt install -y rocm-runtime rocm-core hsa-rocr-dev hip-runtime-amd
 
 
 ########################################################
